@@ -19,3 +19,4 @@ class ConwayAgent(Agent):
                 self.new_state = 0
     def live_or_die(self):
         self.state = self.new_state
+        
