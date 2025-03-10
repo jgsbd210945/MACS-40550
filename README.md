@@ -1,5 +1,5 @@
 # MACSS 40550 ABM
- ABM course in MACSS program taught Spring 2024. 
+ ABM course in MACSS program taught Spring 2025. 
 
  Each week has a separate folder, skill, and model / component that we'll cover. Readings are below, including models / code are here. 
 
