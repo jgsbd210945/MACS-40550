@@ -27,11 +27,9 @@ To run the model interactively once you have a complete agents file, run the fol
 
 ## Files
 
-* ``run.py``: Launches a model visualization server.
-* ``run_ascii.py``: Run the model in text mode.
-* ``schelling.py``: Contains the agent class, and the overall model class.
-* ``server.py``: Defines classes for visualizing the model in the browser via Mesa's modular server, and instantiates a visualization server.
-* ``analysis.ipynb``: Notebook demonstrating how to run experiments and parameter sweeps on the model.
+* ``agents.py``: Contains the agent class, currently incomplete
+* ``model.py``: Contains the model class
+* ``app.py``: Defines classes for visualizing the model in the browser via Solara, and instantiates a visualization server.
 
 ## Further Reading
 
