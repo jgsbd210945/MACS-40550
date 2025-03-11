@@ -2,9 +2,9 @@
 
 ## Summary
 
-The Schelling segregation model is a classic agent-based model, demonstrating how even a mild preference for similar neighbors can lead to a much higher degree of segregation than we would intuitively expect. The model consists of agents on a square grid, where each grid cell can contain at most one agent. Agents come in two colors: red and blue. They are happy if a certain number of their eight possible neighbors are of the same color, and unhappy otherwise. Unhappy agents will pick a random empty cell to move to each step, until they are happy. The model keeps running until there are no unhappy agents.
+The Schelling segregation model is a classic agent-based model, demonstrating how even a mild preference for similar neighbors can lead to a much higher degree of segregation than we would intuitively expect. The model consists of agents on a square grid, where each grid cell can contain at most one agent. Agents come in two colors: red and blue. They are happy if a certain share of their eight possible neighbors are of the same color, and unhappy otherwise. Unhappy agents will pick a random empty cell to move to each step, until they are happy. The model keeps running until there are no unhappy agents.
 
-By default, the number of similar neighbors the agents need to be happy is set to 3. That means the agents would be perfectly happy with a majority of their neighbors being of a different color (e.g. a Blue agent would be happy with five Red neighbors and three Blue ones). Despite this, the model consistently leads to a high degree of segregation, with most agents ending up with no neighbors of a different color.
+Even in runs where the agents would be perfectly happy with a majority of their neighbors being of a different color (e.g. a Blue agent would be happy with five Red neighbors and three Blue ones), the model consistently leads to a high degree of segregation, with most agents ending up with no neighbors of a different color.
 
 ## Installation
 
@@ -13,30 +13,17 @@ To install the dependencies use pip and the requirements.txt in this directory. 
 ```
     $ pip install -r requirements.txt
 ```
+## Your Task
+
+You will note that the agent file in this directory is full of blanks, and if you compile the model as is, it willnot work. Your task is to fix it! The comments in the code describe what you should try to do in filling blanks, and each blank represents a bit of code in my complete version (i.e. you can do this successfully with the number of lines in the current file). That said, feel free to be creative in your implementations; there is always more than one way to do it!
 
 ## How to Run
 
-To run the model interactively, run ``mesa runserver`` in this directory. e.g.
+To run the model interactively once you have a complete agents file, run the following code in this directory:
 
 ```
-    $ mesa runserver
+    $ solara run app.py
 ```
-
-or
-
-Directly run the file ``run.py`` in the terminal. e.g.
-
-```
-    $ python run.py
-```
-
-Then open your browser to [http://127.0.0.1:8521/](http://127.0.0.1:8521/) and press Reset, then Run.
-
-To view and run some example model analyses, launch the IPython Notebook and open ``analysis.ipynb``. Visualizing the analysis also requires [matplotlib](http://matplotlib.org/).
-
-## How to Run without the GUI
-
-To run the model with the grid displayed as an ASCII text, run `python run_ascii.py` in this directory.
 
 ## Files
 
