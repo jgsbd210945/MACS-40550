@@ -18,6 +18,6 @@ To run the model interactively once you have a complete agents file, run the fol
 
 ## Files
 
-* ``agents.py``: Contains the agent class, currently incomplete
+* ``agents.py``: Contains the agent class
 * ``model.py``: Contains the model class
 * ``app.py``: Defines classes for visualizing the model in the browser via Solara, and instantiates a visualization server.
