@@ -1,3 +1,5 @@
+*Code adapted from Mesa Examples project*
+
 # Schelling Segregation Model
 
 ## Summary
