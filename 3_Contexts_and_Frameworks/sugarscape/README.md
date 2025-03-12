@@ -1,3 +1,5 @@
+*Code adapted from Mesa Examples project*
+
 # SugarScape with Gini Index Tracker
 
 This directory contains an implementation of Epstein and Axtell's (1996) model SucarScape from the book *Growing Artifical Societies*, in which agents attempt to survive in an environment defined by the distribution of sugar, a resource they need to survive. Agents vary in how far they can see on the map and how much sugar they require to stay alive. The model is a canonical attempt to to grow a society from the ground up in a specific spatial context, with emergent outcomes like inequality (tracked here as the Gini index over agents' sugar endowments) and carrying capacity.
@@ -18,6 +20,6 @@ To run the model interactively once you have a complete agents file, run the fol
 
 ## Files
 
-* ``agents.py``: Contains the agent class, currently incomplete
+* ``agents.py``: Contains the agent class
 * ``model.py``: Contains the model class
 * ``app.py``: Defines classes for visualizing the model in the browser via Solara, and instantiates a visualization server.

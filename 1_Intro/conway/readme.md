@@ -1,3 +1,5 @@
+*Code adapted from Mesa Examples project*
+
 # Conway's game of life
 
 ## Summary

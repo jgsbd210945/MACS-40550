@@ -1,3 +1,5 @@
+*Code adapted from Mesa Examples project*
+
 # Demographic Prisoner's Dilemma
 
 This directory contains an implementation of Epstein's (1998) model of agents playing an imitative Prisoner's Dilemma (PD) on a grid. In the model, agents begin with a randomized strategy in a modified PD game (note that varying the payoff structure can change outcomes significantly). They determine payoffs by looking at their eight neighbors and deriving results based on their strategies in a given round. They then see who their neighbor with the highest payoff is (including themselves) and imitate that agent. The results generally show that cooperation can spread across a grid over time.
