@@ -6,6 +6,7 @@ import mesa
 from agents import SugarAgent
 ## Using experimental cell space for this model that enforces von Neumann neighborhoods
 from mesa.experimental.cell_space import OrthogonalVonNeumannGrid
+from mesa.experimental.cell_space import HexGrid
 ## Use experimental space feature that allows us to save sugar as a property of the grid spaces
 from mesa.experimental.cell_space.property_layer import PropertyLayer
 
@@ -25,8 +26,8 @@ class SugarScapeModel(mesa.Model):
         initial_population=200,
         endowment_min=25,
         endowment_max=50,
-        metabolism_min=1,
-        metabolism_max=5,
+        metabolism_min=2,
+        metabolism_max=10,
         vision_min=1,
         vision_max=5,
         seed = None
@@ -38,7 +39,7 @@ class SugarScapeModel(mesa.Model):
         ## Set model to run continuously
         self.running = True
         ## Create grid
-        self.grid = OrthogonalVonNeumannGrid(
+        self.grid = HexGrid(
             (self.width, self.height), torus=False, random=self.random
         )
         ## Define datacollector, which calculates current Gini coefficient
@@ -72,6 +73,10 @@ class SugarScapeModel(mesa.Model):
         self.grid.sugar.data = np.minimum(
             self.grid.sugar.data + 1, self.sugar_distribution
         )
+        self.agents.shuffle_do("move") # Simultaneous Activation
+        self.agents.shuffle_do("move")
+        self.agents.shuffle_do("move")
+        self.agents.shuffle_do("move")
         self.agents.shuffle_do("move")
         self.agents.shuffle_do("gather_and_eat")
         self.agents.shuffle_do("see_if_die")

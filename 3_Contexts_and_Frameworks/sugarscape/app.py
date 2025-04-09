@@ -41,11 +41,11 @@ model_params = {
         "Initial Population", value=200, min=50, max=500, step=10
     ),
     # Agent endowment parameters
-    "endowment_min": Slider("Min Initial Endowment", value=25, min=5, max=30, step=1),
+    "endowment_min": Slider("Min Initial Endowment", value=25, min=10, max=30, step=1),
     "endowment_max": Slider("Max Initial Endowment", value=50, min=30, max=100, step=1),
     # Metabolism parameters
-    "metabolism_min": Slider("Min Metabolism", value=1, min=1, max=3, step=1),
-    "metabolism_max": Slider("Max Metabolism", value=5, min=3, max=8, step=1),
+    "metabolism_min": Slider("Min Metabolism", value=1, min=1, max=2, step=1),
+    "metabolism_max": Slider("Max Metabolism", value=5, min=3, max=10, step=1),
     # Vision parameters
     "vision_min": Slider("Min Vision", value=1, min=1, max=3, step=1),
     "vision_max": Slider("Max Vision", value=5, min=3, max=8, step=1),
