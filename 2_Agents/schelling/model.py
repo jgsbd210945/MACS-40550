@@ -30,11 +30,9 @@ class SchellingModel(Model):
         )
         ## Place agents randomly around the grid, randomly assigning them to agent types.
         for cont, pos in self.grid.coord_iter():
+            axis0, axis1 = round(self.random.random()), round(self.random.random())
             if self.random.random() < self.density:
-                if self.random.random() < self.group_one_share:
-                    self.grid.place_agent(SchellingAgent(self, 1), pos)
-                else:
-                    self.grid.place_agent(SchellingAgent(self, 0), pos)
+                self.grid.place_agent(SchellingAgent(self, axis0, axis1, self.random.random()), pos)
         ## Initialize datacollector
         self.datacollector.collect(self)
 
