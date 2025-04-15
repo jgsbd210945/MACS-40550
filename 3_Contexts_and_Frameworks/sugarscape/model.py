@@ -24,12 +24,14 @@ class SugarScapeModel(mesa.Model):
         width = 50,
         height = 50,
         initial_population=200,
-        endowment_min=25,
-        endowment_max=50,
-        metabolism_min=2,
-        metabolism_max=10,
+        endowment_min=10,
+        endowment_max=30,
+        metabolism_min=1,
+        metabolism_max=3,
         vision_min=1,
         vision_max=5,
+        move_min=1,
+        move_max=3,
         seed = None
     ):
         super().__init__(seed=seed)
@@ -65,6 +67,9 @@ class SugarScapeModel(mesa.Model):
             vision=self.rng.integers(
                 vision_min, vision_max, (initial_population,), endpoint=True
             ),
+            movement = self.rng.integers(
+                move_min, move_max, (initial_population,), endpoint=True
+            )
         )
         ## Initialize datacollector
         self.datacollector.collect(self)
@@ -73,11 +78,8 @@ class SugarScapeModel(mesa.Model):
         self.grid.sugar.data = np.minimum(
             self.grid.sugar.data + 1, self.sugar_distribution
         )
+        
         self.agents.shuffle_do("move") # Simultaneous Activation
-        self.agents.shuffle_do("move")
-        self.agents.shuffle_do("move")
-        self.agents.shuffle_do("move")
-        self.agents.shuffle_do("move")
         self.agents.shuffle_do("gather_and_eat")
         self.agents.shuffle_do("see_if_die")
         self.datacollector.collect(self)

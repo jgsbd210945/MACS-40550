@@ -41,14 +41,17 @@ model_params = {
         "Initial Population", value=200, min=50, max=500, step=10
     ),
     # Agent endowment parameters
-    "endowment_min": Slider("Min Initial Endowment", value=25, min=10, max=30, step=1),
-    "endowment_max": Slider("Max Initial Endowment", value=50, min=30, max=100, step=1),
+    "endowment_min": Slider("Min Initial Endowment", value=10, min=5, max=20, step=1), # Changed to make scaling work
+    "endowment_max": Slider("Max Initial Endowment", value=30, min=20, max=50, step=1),
     # Metabolism parameters
     "metabolism_min": Slider("Min Metabolism", value=1, min=1, max=2, step=1),
-    "metabolism_max": Slider("Max Metabolism", value=5, min=3, max=10, step=1),
+    "metabolism_max": Slider("Max Metabolism", value=3, min=2, max=5, step=1), # Changed to make scaling work
     # Vision parameters
     "vision_min": Slider("Min Vision", value=1, min=1, max=3, step=1),
     "vision_max": Slider("Max Vision", value=5, min=3, max=8, step=1),
+    # Initial Movemement Parameters
+    "move_min": Slider("Min Initial Movement", value=1, min=1, max=2, step=1), # Initial Movement (accounting for genetics, etc.)
+    "move_max": Slider("Max Initial Movement", value=3, min=2, max=5, step=1),
 }
 
 ##Instantiate model
