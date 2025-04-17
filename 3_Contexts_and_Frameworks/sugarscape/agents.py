@@ -19,7 +19,7 @@ class SugarAgent(CellAgent):
         self.sugar = sugar
         self.metabolism = metabolism
         self.vision = vision
-        self.movement = movement
+        self.movement = movement # How much *can* an agent move?
     ## Define movement action
     def move(self):
         for iter in range(self.movement):
@@ -56,8 +56,14 @@ class SugarAgent(CellAgent):
             self.cell = self.random.choice(final_candidates)
     ## consumer sugar in current cell, depleting it, then consumer metabolism
     def gather_and_eat(self):
-        self.sugar += self.cell.sugar
-        self.cell.sugar = 0
+
+        # Editing so that they try to replenish what they burn, although if that's not possible, they just take what they can.
+        if self.cell.sugar < (self.metabolism + math.floor(0.5 * self.movement)):
+            self.sugar += self.cell.sugar
+            self.cell.sugar = 0
+        else:
+            self.sugar += (self.metabolism + math.floor(0.5 * self.movement))
+            self.cell.sugar -= (self.metabolism + math.floor(0.5 * self.movement))
 
         # At the same time, what I'll do is update movement/metabolism based on the amount of sugar someone overall has.
 
@@ -65,10 +71,21 @@ class SugarAgent(CellAgent):
         # So moving 1 doesn't change, moving 2 or 3 increases by 1, and so on. Trying to make this not too overpowering.
         self.sugar -= (self.metabolism + math.floor(0.5 * self.movement))
         
-        # Now, what can we do is also affect the amount someone can move based on the amount of sugar they have, with 1 being the base.
-        self.movement = 1 if self.sugar < 5 else round(self.sugar / 10)
-        # Rounding *should* even it out...
-        # BUT if they have less than 5 sugar...they should be able to move a little until they die.
+        # Now, what can we do is also affect the amount someone can move based on the amount of sugar they have.
+        self.movement = self.movement + 1 if (self.sugar < 3 or self.movement < (self.sugar / 5)) else self.movement - 1
+        # If one-fifth of their sugar exceeds the amount of movement they have, movement increases. Otherwise it decreases.
+        # If the amount of sugar they have is less than three, they can attempt to sprint to sugar to get out (by steadily adding one)
+
+        # I'll also scale vision with sugar, albeit in a different fashion.
+        # If movement is less vision, vision begins to decrease as energy used for both correlates.
+        # Otherwise, it'll increase.
+        if self.movement < self.vision:
+            self.vision -= 1
+        else:
+            self.vision += 1
+        # Although...they'll get a brief boost if they have little sugar
+        if self.sugar < 4:
+            self.vision = 5 # Automatically lots of vision to try to move to the sugar!
 
     ## If an agent has zero or negative sugar, it dies and is removed from the model
     def see_if_die(self):

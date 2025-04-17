@@ -69,7 +69,7 @@ class SugarScapeModel(mesa.Model):
             ),
             movement = self.rng.integers(
                 move_min, move_max, (initial_population,), endpoint=True
-            )
+            ),
         )
         ## Initialize datacollector
         self.datacollector.collect(self)
