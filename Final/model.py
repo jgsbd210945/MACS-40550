@@ -26,9 +26,17 @@ class CountryNetwork(Model):
         num_nodes=50, # Needs to be a bit higher for the level we're at. Max should prolly be...200?
         avg_node_degree=10, # b/c we have more nodes, will need more connections (Especially in an international environment)
         seed=None,
+        dem_levels=0.3,
+        consol_levels=0.5,
+        type_split=0.5,
+        power_change=0.05,
     ):
         super().__init__(seed=seed)
         random.seed(seed)
+
+        # Model-level Variables
+        self.type_split = type_split
+        self.power_change = power_change
 
         # Network Setup
         self.num_nodes = num_nodes
@@ -72,9 +80,15 @@ class CountryNetwork(Model):
 
         # Assign democracy, power, and consolidation levels
         for a in self.grid.get_cell_list_contents():
-            self.consolidation = self.random.random()
-            self.democracy = self.random.random()
             self.power = self.random.random()
+
+            # Tentatively using beta distributions for consolidation and democracy. May change as needed.
+            # Idea: a, b = 0, 1; k = 1; mu = input parameter.
+            # Ergo: alpha = input param, beta = 1 - input param. No need to scale since it's between 0 and 1.
+            self.consolidation = self.random.betavariate(consol_levels, (1 - consol_levels))
+
+            # Democracy is the same, using average LEVEL of democracy as the mean.
+            self.democracy = self.random.betavariate(dem_levels, (1 - dem_levels))
 
         # There's a VERY good chance I edit this to do something like a normal distribution, but at this point random distribution should make sense?
         # Not sure. Might need to relate power to consolidationand whatnot as well?

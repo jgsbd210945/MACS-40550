@@ -37,15 +37,15 @@ class CountryAgent(Agent):
         # to change probabilities based on consolidation)
         # Then, it will have a chance to shift more or less democratic.
         if self.random.random() > (1 - self.consolidation):
-            if self.random.random > 0.5:
+            if self.random.random() > self.model.type_split:
                 self.democracy += 0.05 # democratizing episode
             else:
                 self.democracy -= 0.05 # autocratizing episode
-        
+
         # Update regime: Democracy if dem level is above .7, autocracy if it's below 0.3, grey if it's somewhere in between.
         self.regime = "dem" if self.democracy > 0.7 else "auto" if self.democracy < 0.3 else "grey"
         
-        self.power += (self.random.random * 0.1) - 0.05 # Random shift in power from -0.05 to 0.05
+        self.power += self.random.uniform((self.model.power_change * -1), self.model.power_change)
 
 
     # Steps! Agent interacts with a random neighbor and then updates.

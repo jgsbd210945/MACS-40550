@@ -33,6 +33,37 @@ model_params = {
         max=50,
         step=1,
     ),
+    "dem_levels": Slider(
+        label="Average Level of Democracy",
+        value=0.5,
+        min=0,
+        max=1,
+        step=0.05,
+    ),
+    "consol_levels": Slider(
+        label="Average Consolidation Level",
+        value=0.5,
+        min=0,
+        max=1,
+        step=0.05,
+    ),
+    # I'm not going to vary power since it'd be relative to everyone else anyway, though if I do a normal distribution
+    # I'll likely find a way to influence where the peak is here.
+    
+    "type_split": Slider(
+        label="Percent Chance a state randomly democratizes",
+        value=0.5,
+        min=0,
+        max=1,
+        step=0.05,
+    ),
+    "power_change": Slider(
+        label="Max Level of Random Changes in Power",
+        value=0.05,
+        min=0,
+        max=0.5,
+        step=0.01,
+    ),
 }
 
 def agent_portrayal(agent):
