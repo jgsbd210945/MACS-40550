@@ -1,0 +1,55 @@
+
+from mesa import Agent
+
+class CountryAgent(Agent):
+    def __init__(
+        self,
+        model,
+        initial_regime, # Could import from VDEM? Though also could very well just do rand num gen. Currently just doing an initial setup step there.
+        consolidation,
+        democracy,
+        power,
+    ):
+        super().__init__(model)
+
+        self.consolidation = consolidation
+        self.democracy = democracy
+        self.power = power
+        self.regime = "dem" if self.democracy > 0.7 else "auto" if self.democracy < 0.3 else "grey"
+
+    def interact(self): # interact with neighbor and etc.
+        neighbors_nodes = self.model.grid.get_neighborhood(self.pos, include_center = False)
+        other = self.random.choice(neighbors_nodes) # Who does the agent interact with?
+
+        if other.power > self.power: # Else do nothing!
+            # TLDR: If regimes match, consolidation increases by 0.1 times the differences in regimes.
+            # If two 'grey area' states interact, their regime won't change much, but if a very democratic
+            # state interacts with a very autocratic one (and the autocratic one is more powerful), then
+            # consolidation in that state is shaken.
+            if self.regime == other.regime:
+                self.consolidation += (0.1 * abs(self.democracy - other.democracy))
+            else:
+                self.consolidation -= (0.1 * abs(self.democracy - other.democracy))
+
+    def update(self):
+        # If a random number is greater than the amount a state is NOT consolidated (therefore making it easy
+        # to change probabilities based on consolidation)
+        # Then, it will have a chance to shift more or less democratic.
+        if self.random.random() > (1 - self.consolidation):
+            if self.random.random > 0.5:
+                self.democracy += 0.05 # democratizing episode
+            else:
+                self.democracy -= 0.05 # autocratizing episode
+        
+        # Update regime: Democracy if dem level is above .7, autocracy if it's below 0.3, grey if it's somewhere in between.
+        self.regime = "dem" if self.democracy > 0.7 else "auto" if self.democracy < 0.3 else "grey"
+        
+        self.power += (self.random.random * 0.1) - 0.05 # Random shift in power from -0.05 to 0.05
+
+
+    # Step! Agent interacts with a random neighbor and then updates.
+    def step(self):
+        self.interact()
+        self.update()
+        # Do I also want to have a chance to add further interactions here? i.e. adding or cutting a link so that
+        # The networks change?
