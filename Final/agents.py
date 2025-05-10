@@ -16,6 +16,7 @@ class CountryAgent(Agent):
         self.democracy = democracy
         self.power = power
         self.regime = "dem" if self.democracy > 0.7 else "auto" if self.democracy < 0.3 else "grey"
+            # Want to do by color here on the graph so it's clear.
 
     def interact(self): # interact with neighbor and etc.
         neighbors_nodes = self.model.grid.get_neighborhood(self.pos, include_center = False)
@@ -47,7 +48,7 @@ class CountryAgent(Agent):
         self.power += (self.random.random * 0.1) - 0.05 # Random shift in power from -0.05 to 0.05
 
 
-    # Step! Agent interacts with a random neighbor and then updates.
+    # Steps! Agent interacts with a random neighbor and then updates.
     def step(self):
         self.interact()
         self.update()

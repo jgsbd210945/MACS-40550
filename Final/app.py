@@ -21,16 +21,16 @@ model_params = {
     },
     "num_nodes": Slider(
         label="Number of agents",
-        value=10,
-        min=10,
-        max=100,
-        step=1,
+        value=50,
+        min=25,
+        max=250,
+        step=5,
     ),
     "avg_node_degree": Slider(
         label="Avg Node Degree",
-        value=3,
-        min=3,
-        max=8,
+        value=10,
+        min=5,
+        max=50,
         step=1,
     ),
 }
@@ -69,6 +69,7 @@ def NetPlot(model):
     solara.FigureMatplotlib(fig)
 
 # I'll want a stacked bar graph of democracies/autocracies/grey over time. Will need to set that up.
+DistributionGraph = make_plot_component() # Need to flesh this out
 
 # Do I want an overall level of democracy? Could be useful
 # Could also do a total level of consolidation.
@@ -79,9 +80,7 @@ model1 = CountryNetwork()
 # Define page components
 page = SolaraViz(
     model1,
-    components=[
-        NetPlot,
-    ],
+    components=[NetPlot], # I don't think I need anything else *yet*, just need to do the viz for democracies.
     model_params=model_params,
     name="Consolidation Model",
 )

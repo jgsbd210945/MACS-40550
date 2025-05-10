@@ -23,8 +23,8 @@ def num_greys(model):
 class CountryNetwork(Model):
     def __init__(
         self,
-        num_nodes=10,
-        avg_node_degree=3,
+        num_nodes=50, # Needs to be a bit higher for the level we're at. Max should prolly be...200?
+        avg_node_degree=10, # b/c we have more nodes, will need more connections (Especially in an international environment)
         seed=None,
     ):
         super().__init__(seed=seed)
