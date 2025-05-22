@@ -3,7 +3,7 @@ import math
 import solara
 import networkx as nx
 from matplotlib.figure import Figure
-from model import CountryNetwork
+from model import State, CountryNetwork
 from mesa.visualization import (
     Slider,
     SolaraViz,
@@ -51,14 +51,14 @@ model_params = {
     # I'll likely find a way to influence where the peak is here.
     
     "type_split": Slider(
-        label="Percent Chance a state randomly democratizes",
+        label="% Chance of Democratization",
         value=0.5,
         min=0,
         max=1,
         step=0.05,
     ),
     "power_change": Slider(
-        label="Max Level of Random Changes in Power",
+        label="Power Shift Magnitude",
         value=0.05,
         min=0,
         max=0.5,
@@ -66,10 +66,12 @@ model_params = {
     ),
 }
 
+# Colors. Need to ensure color dict works here.
 def agent_portrayal(agent):
     node_color_dict = {
-        # Need to figure out how to model democracy/autocracy/grey. Could do a State but in that case I'd need to reformat
-        # how I'm doing this, and I'm not sure if I want to do that.
+        State.AUTO: "red",
+        State.GREY: "gray",
+        State.DEM: "blue",
     }
     return node_color_dict[agent.state]
 
@@ -100,7 +102,17 @@ def NetPlot(model):
     solara.FigureMatplotlib(fig)
 
 # I'll want a stacked bar graph of democracies/autocracies/grey over time. Will need to set that up.
-DistributionGraph = make_plot_component() # Need to flesh this out
+#DistributionGraph = make_plot_component() # Need to flesh this out
+
+def post_process_lineplot(ax):
+    ax.set_ylim(ymin=0)
+    ax.set_ylabel("# states")
+    ax.legend(bbox_to_anchor=(1.05, 1.0), loc="upper left")
+
+StatePlot = make_plot_component(
+    {"Autocracies": "red", "Grey": "gray", "Democracies": "blue"},
+    post_process=post_process_lineplot,
+)
 
 # Do I want an overall level of democracy? Could be useful
 # Could also do a total level of consolidation.
@@ -111,7 +123,9 @@ model1 = CountryNetwork()
 # Define page components
 page = SolaraViz(
     model1,
-    components=[NetPlot], # I don't think I need anything else *yet*, just need to do the viz for democracies.
+    components=[
+        NetPlot,
+        StatePlot,],
     model_params=model_params,
     name="Consolidation Model",
 )

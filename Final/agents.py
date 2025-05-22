@@ -1,11 +1,17 @@
+from enum import Enum
 
 from mesa import Agent
+
+# States for democracy
+class State(Enum):
+    AUTO = 0
+    GREY = 1
+    DEM = 2
 
 class CountryAgent(Agent):
     def __init__(
         self,
         model,
-        initial_regime, # Could import from VDEM? Though also could very well just do rand num gen. Currently just doing an initial setup step there.
         consolidation,
         democracy,
         power,
@@ -15,22 +21,25 @@ class CountryAgent(Agent):
         self.consolidation = consolidation
         self.democracy = democracy
         self.power = power
-        self.regime = "dem" if self.democracy > 0.7 else "auto" if self.democracy < 0.3 else "grey"
+        self.state = State.DEM if self.democracy >= 0.7 else State.AUTO if self.democracy < 0.3 else State.GREY
             # Want to do by color here on the graph so it's clear.
 
     def interact(self): # interact with neighbor and etc.
-        neighbors_nodes = self.model.grid.get_neighborhood(self.pos, include_center = False)
-        other = self.random.choice(neighbors_nodes) # Who does the agent interact with?
+        neighbor_nodes = self.model.grid.get_neighborhood(self.pos, include_center = False)
+
+        neighbors = [agent for agent in self.model.grid.get_cell_list_contents(neighbor_nodes)]
+
+        other = self.random.choice(neighbors) # Who does the agent interact with?
 
         if other.power > self.power: # Else do nothing!
             # TLDR: If regimes match, consolidation increases by 0.1 times the differences in regimes.
             # If two 'grey area' states interact, their regime won't change much, but if a very democratic
             # state interacts with a very autocratic one (and the autocratic one is more powerful), then
             # consolidation in that state is shaken.
-            if self.regime == other.regime:
-                self.consolidation += (0.1 * abs(self.democracy - other.democracy))
+            if self.state != State.GREY and self.state == other.state:
+                self.consolidation += 0.1
             else:
-                self.consolidation -= (0.1 * abs(self.democracy - other.democracy))
+                self.consolidation -= 0.1
 
     def update(self):
         # If a random number is greater than the amount a state is NOT consolidated (therefore making it easy
@@ -43,7 +52,7 @@ class CountryAgent(Agent):
                 self.democracy -= 0.05 # autocratizing episode
 
         # Update regime: Democracy if dem level is above .7, autocracy if it's below 0.3, grey if it's somewhere in between.
-        self.regime = "dem" if self.democracy > 0.7 else "auto" if self.democracy < 0.3 else "grey"
+        self.state = State.DEM if self.democracy >= 0.7 else State.AUTO if self.democracy < 0.3 else State.GREY
         
         self.power += self.random.uniform((self.model.power_change * -1), self.model.power_change)
 

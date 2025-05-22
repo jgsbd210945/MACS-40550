@@ -4,20 +4,20 @@ import networkx as nx
 
 import mesa
 from mesa import Model
-from agents import CountryAgent
+from agents import State, CountryAgent
 
 # Helper functions for metrics
-def number_state(model, regime):
-    return sum(1 for a in model.grid.get_all_cell_contents() if a.regime is regime)
+def number_state(model, state):
+    return sum(1 for a in model.grid.get_all_cell_contents() if a.state is state)
 
 def num_dems(model):
-    return number_state(model, "dem")
+    return number_state(model, State.DEM)
 
 def num_autos(model):
-    return number_state(model, "auto")
+    return number_state(model, State.AUTO)
 
 def num_greys(model):
-    return number_state(model, "grey")
+    return number_state(model, State.GREY)
 
 
 class CountryNetwork(Model):
@@ -37,6 +37,11 @@ class CountryNetwork(Model):
         # Model-level Variables
         self.type_split = type_split
         self.power_change = power_change
+
+        # Initializing these as dummy variables so we can reassign later.
+#        self.democracy = dem_levels
+#        self.consolidation = consol_levels
+#        self.power = 0.5
 
         # Network Setup
         self.num_nodes = num_nodes
@@ -62,7 +67,7 @@ class CountryNetwork(Model):
             {
                 "Democracies": num_dems,
                 "Autocracies": num_autos,
-                "Grey Area": num_greys,
+                "Grey": num_greys,
             }
         )
 
@@ -70,28 +75,22 @@ class CountryNetwork(Model):
         for node in self.G.nodes():
             a = CountryAgent(
                 self,
-                self.consolidation,
-                self.democracy,
-                self.power,
+
+                # Tentatively using beta distributions for consolidation and democracy. May change as needed.
+                # Idea: a, b = 0, 1; k = 1; mu = input parameter.
+                # Ergo: alpha = input param, beta = 1 - input param. No need to scale since it's between 0 and 1.
+                self.random.betavariate(consol_levels, (1 - consol_levels)), # Consolidation
+
+                # Democracy is the same, using average LEVEL of democracy as the mean. ## DO BIMODAL???
+                self.random.betavariate(dem_levels, (1 - dem_levels)), # Democracy
+
+                # Power (Currently) is random, uniformly distributed (do normal dist?)
+                self.random.random(), # Power
             )
 
             # Add the agent to the node
             self.grid.place_agent(a, node)
 
-        # Assign democracy, power, and consolidation levels
-        for a in self.grid.get_cell_list_contents():
-            self.power = self.random.random()
-
-            # Tentatively using beta distributions for consolidation and democracy. May change as needed.
-            # Idea: a, b = 0, 1; k = 1; mu = input parameter.
-            # Ergo: alpha = input param, beta = 1 - input param. No need to scale since it's between 0 and 1.
-            self.consolidation = self.random.betavariate(consol_levels, (1 - consol_levels))
-
-            # Democracy is the same, using average LEVEL of democracy as the mean.
-            self.democracy = self.random.betavariate(dem_levels, (1 - dem_levels))
-
-        # There's a VERY good chance I edit this to do something like a normal distribution, but at this point random distribution should make sense?
-        # Not sure. Might need to relate power to consolidationand whatnot as well?
 
         self.running = True
         self.datacollector.collect(self)
