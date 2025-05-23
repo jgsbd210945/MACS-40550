@@ -114,6 +114,18 @@ StatePlot = make_plot_component(
     post_process=post_process_lineplot,
 )
 
+#def get_dem_level(model):
+#    dem_lvl = model.dem_level()
+#    dem_lvl_txt = r"$\infty$" if dem_lvl is math.inf else f"{dem_lvl}"
+    
+#    return solara.markdown(f"Average Democracy Level: {dem_lvl_txt}<br>")
+
+#def get_consol_level(model):
+#    consol_lvl = model.consol_level()
+#    consol_lvl_txt = r"$\infty$" if consol_lvl is math.inf else f"{consol_lvl}"
+    
+#    return solara.markdown(f"Average Democracy Level: {consol_lvl_txt}")
+
 # Do I want an overall level of democracy? Could be useful
 # Could also do a total level of consolidation.
 
@@ -125,7 +137,10 @@ page = SolaraViz(
     model1,
     components=[
         NetPlot,
-        StatePlot,],
+        StatePlot,
+#        get_dem_level,
+#        get_consol_level,
+    ],
     model_params=model_params,
     name="Consolidation Model",
 )

@@ -36,7 +36,9 @@ class CountryAgent(Agent):
             # If two 'grey area' states interact, their regime won't change much, but if a very democratic
             # state interacts with a very autocratic one (and the autocratic one is more powerful), then
             # consolidation in that state is shaken.
-            if self.state != State.GREY and self.state == other.state:
+            if self.state == State.GREY:
+                self.consolidation -= 0.1
+            elif self.state == other.state:
                 self.consolidation += 0.1
             else:
                 self.consolidation -= 0.1
@@ -47,9 +49,9 @@ class CountryAgent(Agent):
         # Then, it will have a chance to shift more or less democratic.
         if self.random.random() > (1 - self.consolidation):
             if self.random.random() > self.model.type_split:
-                self.democracy += 0.05 # democratizing episode
+                self.democracy += 0.1 # democratizing episode
             else:
-                self.democracy -= 0.05 # autocratizing episode
+                self.democracy -= 0.1 # autocratizing episode
 
         # Update regime: Democracy if dem level is above .7, autocracy if it's below 0.3, grey if it's somewhere in between.
         self.state = State.DEM if self.democracy >= 0.7 else State.AUTO if self.democracy < 0.3 else State.GREY

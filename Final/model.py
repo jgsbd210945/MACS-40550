@@ -1,4 +1,5 @@
 import math
+import statistics as stats
 import random
 import networkx as nx
 
@@ -62,15 +63,6 @@ class CountryNetwork(Model):
         # Create grid from network object
         self.grid = mesa.space.NetworkGrid(self.G)
 
-        # Data collection. Mostly to track number of regimes and pct consolidaiton
-        self.datacollector = mesa.DataCollector(
-            {
-                "Democracies": num_dems,
-                "Autocracies": num_autos,
-                "Grey": num_greys,
-            }
-        )
-
         # Create agents
         for node in self.G.nodes():
             a = CountryAgent(
@@ -84,16 +76,38 @@ class CountryNetwork(Model):
                 # Democracy is the same, using average LEVEL of democracy as the mean. ## DO BIMODAL???
                 self.random.betavariate(dem_levels, (1 - dem_levels)), # Democracy
 
-                # Power (Currently) is random, uniformly distributed (do normal dist?)
-                self.random.random(), # Power
+                # Power is random, distrubuted on a beta distribution to skew towards lower.
+                self.random.betavariate(0.25, 0.75), # Power
             )
 
             # Add the agent to the node
             self.grid.place_agent(a, node)
 
+        # Data collection. Mostly to track number of regimes and pct Consolidaiton/Democracy
+        self.datacollector = mesa.DataCollector(
+            {
+                "Democracies": num_dems,
+                "Autocracies": num_autos,
+                "Grey": num_greys,
+#                "Democracy Level": self.dem_level(),
+#                "Consolidation Level": self.consol_level(),
+            }
+        )
 
         self.running = True
         self.datacollector.collect(self)
+
+    def dem_level(self):
+        try:
+            stats.mean(agent.democracy for agent in self.grid.get_all_cell_contents())
+        except ZeroDivisionError:
+            return math.inf
+
+    def consol_level(self):
+        try:
+            stats.mean(agent.consolidation for agent in self.grid.get_all_cell_contents())
+        except ZeroDivisionError:
+            return math.inf
 
     # Step function (Basic idea, I'll need to flesh this out)
     def step(self):
