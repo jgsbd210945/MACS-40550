@@ -89,8 +89,8 @@ class CountryNetwork(Model):
                 "Democracies": num_dems,
                 "Autocracies": num_autos,
                 "Grey": num_greys,
-#                "Democracy Level": self.dem_level(),
-#                "Consolidation Level": self.consol_level(),
+                "Democracy Level": lambda x: x.dem_level(),
+                "Consolidation Level": lambda x: x.consol_level(),
             }
         )
 
@@ -99,13 +99,13 @@ class CountryNetwork(Model):
 
     def dem_level(self):
         try:
-            stats.mean(agent.democracy for agent in self.grid.get_all_cell_contents())
+            return stats.mean(agent.democracy for agent in self.grid.get_all_cell_contents())
         except ZeroDivisionError:
             return math.inf
 
     def consol_level(self):
         try:
-            stats.mean(agent.consolidation for agent in self.grid.get_all_cell_contents())
+            return stats.mean(agent.consolidation for agent in self.grid.get_all_cell_contents())
         except ZeroDivisionError:
             return math.inf
 

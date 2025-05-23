@@ -36,12 +36,16 @@ class CountryAgent(Agent):
             # If two 'grey area' states interact, their regime won't change much, but if a very democratic
             # state interacts with a very autocratic one (and the autocratic one is more powerful), then
             # consolidation in that state is shaken.
-            if self.state == State.GREY:
-                self.consolidation -= 0.1
-            elif self.state == other.state:
+            if self.state == other.state and self.state != State.GREY:
                 self.consolidation += 0.1
             else:
                 self.consolidation -= 0.1
+
+            # Bounding (so it doesn't go negative infinitely)
+            if self.consolidation < 0:
+                self.consolidation = 0
+            elif self.consolidation > 1:
+                self.consolidation = 1
 
     def update(self):
         # If a random number is greater than the amount a state is NOT consolidated (therefore making it easy
@@ -52,11 +56,23 @@ class CountryAgent(Agent):
                 self.democracy += 0.1 # democratizing episode
             else:
                 self.democracy -= 0.1 # autocratizing episode
+            
+            # Bounding
+            if self.democracy < 0:
+                self.democracy = 0
+            if self.democracy > 1:
+                self.democracy = 1
 
         # Update regime: Democracy if dem level is above .7, autocracy if it's below 0.3, grey if it's somewhere in between.
         self.state = State.DEM if self.democracy >= 0.7 else State.AUTO if self.democracy < 0.3 else State.GREY
         
         self.power += self.random.uniform((self.model.power_change * -1), self.model.power_change)
+
+        # Bounding
+        if self.power < 0:
+            self.power = 0
+        if self.power > 1:
+            self.power = 1
 
 
     # Steps! Agent interacts with a random neighbor and then updates.

@@ -59,7 +59,7 @@ model_params = {
     ),
     "power_change": Slider(
         label="Power Shift Magnitude",
-        value=0.05,
+        value=0.1,
         min=0,
         max=0.5,
         step=0.01,
@@ -114,17 +114,21 @@ StatePlot = make_plot_component(
     post_process=post_process_lineplot,
 )
 
-#def get_dem_level(model):
-#    dem_lvl = model.dem_level()
-#    dem_lvl_txt = r"$\infty$" if dem_lvl is math.inf else f"{dem_lvl}"
+@solara.component
+def get_dem_level(model):
+    update_counter.get()
+    dem_lvl = model.dem_level()
+    dem_lvl_txt = r"$\infty$" if dem_lvl is math.inf else f"{dem_lvl:.3f}"
     
-#    return solara.markdown(f"Average Democracy Level: {dem_lvl_txt}<br>")
+    return solara.Markdown(f"Average Democracy Level: {dem_lvl_txt}")
 
-#def get_consol_level(model):
-#    consol_lvl = model.consol_level()
-#    consol_lvl_txt = r"$\infty$" if consol_lvl is math.inf else f"{consol_lvl}"
+@solara.component
+def get_consol_level(model):
+    update_counter.get()
+    consol_lvl = model.consol_level()
+    consol_lvl_txt = r"$\infty$" if consol_lvl is math.inf else f"{consol_lvl:.3f}"
     
-#    return solara.markdown(f"Average Democracy Level: {consol_lvl_txt}")
+    return solara.Markdown(f"Average Consolidation Level: {consol_lvl_txt}")
 
 # Do I want an overall level of democracy? Could be useful
 # Could also do a total level of consolidation.
@@ -138,8 +142,8 @@ page = SolaraViz(
     components=[
         NetPlot,
         StatePlot,
-#        get_dem_level,
-#        get_consol_level,
+        get_dem_level,
+        get_consol_level,
     ],
     model_params=model_params,
     name="Consolidation Model",
