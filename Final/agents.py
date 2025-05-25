@@ -31,37 +31,42 @@ class CountryAgent(Agent):
 
         other = self.random.choice(neighbors) # Who does the agent interact with?
 
-        if other.power > self.power: # Else do nothing!
-            # TLDR: If regimes match, consolidation increases by 0.1 times the differences in regimes.
-            # If two 'grey area' states interact, their regime won't change much, but if a very democratic
-            # state interacts with a very autocratic one (and the autocratic one is more powerful), then
-            # consolidation in that state is shaken.
-            if self.state == other.state and self.state != State.GREY:
-                self.consolidation += 0.1
-            else:
-                self.consolidation -= 0.1
-
-            # Bounding (so it doesn't go negative infinitely)
-            if self.consolidation < 0:
-                self.consolidation = 0
-            elif self.consolidation > 1:
-                self.consolidation = 1
+        # If regimes match, consolidation increases by 0.1. If two 'grey area' states interact, though, this
+        # doesn't change, since they're both in the middle, attempting to push down consolidation in the middle.
+        # Additionally, if the other state's power is greater than its own, it will decrease in consolidation, signaling
+        # a challenget to its system of governance by a more powerful neighbor.
+        if self.state == other.state and self.state != State.GREY:
+            self.consolidation += 0.1
+        elif other.power > self.power:
+            self.consolidation -= 0.1
+        
+        # Bounding (so it doesn't go negative infinitely)
+        if self.consolidation < 0:
+            self.consolidation = 0
+        elif self.consolidation > 1:
+            self.consolidation = 1
 
     def update(self):
         # If a random number is greater than the amount a state is NOT consolidated (therefore making it easy
         # to change probabilities based on consolidation)
         # Then, it will have a chance to shift more or less democratic.
         if self.random.random() > (1 - self.consolidation):
+            self.consolidation -= 0.05 # Further instability = further decrease in consolidation.
+
             if self.random.random() > self.model.type_split:
-                self.democracy += 0.1 # democratizing episode
+                self.democracy += self.random.uniform(0.05, (1 - self.consolidation)) # democratizing episode
             else:
-                self.democracy -= 0.1 # autocratizing episode
+                self.democracy -= self.random.uniform(0.05, (1 - self.consolidation)) # autocratizing episode
             
             # Bounding
             if self.democracy < 0:
                 self.democracy = 0
             if self.democracy > 1:
                 self.democracy = 1
+
+        # If the state doesn't shift its regime, it gets another bonus in its consolidation level.
+        else:
+            self.consolidation += 0.05
 
         # Update regime: Democracy if dem level is above .7, autocracy if it's below 0.3, grey if it's somewhere in between.
         self.state = State.DEM if self.democracy >= 0.7 else State.AUTO if self.democracy < 0.3 else State.GREY
