@@ -5,7 +5,7 @@ from model import CountryNetwork
 import pandas as pd
 
 params = {
-    "num_nodes": list(range(50, 250, 50)),
+    "num_nodes": list(range(50, 250, 20)),
     "avg_node_degree": 10,
     "consol_levels": 0.5,
     "type_split": 0.5,
