@@ -46,10 +46,7 @@ model_params = {
         min=0,
         max=1,
         step=0.05,
-    ),
-    # I'm not going to vary power since it'd be relative to everyone else anyway, though if I do a normal distribution
-    # I'll likely find a way to influence where the peak is here.
-    
+    ),    
     "type_split": Slider(
         label="% Chance of Democratization",
         value=0.5,

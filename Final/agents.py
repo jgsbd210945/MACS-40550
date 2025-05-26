@@ -29,16 +29,22 @@ class CountryAgent(Agent):
 
         neighbors = [agent for agent in self.model.grid.get_cell_list_contents(neighbor_nodes)]
 
-        other = self.random.choice(neighbors) # Who does the agent interact with?
+        try:
+            other = self.random.choice(neighbors) # Who does the agent interact with?
 
-        # If regimes match, consolidation increases by 0.1. If two 'grey area' states interact, though, this
-        # doesn't change, since they're both in the middle, attempting to push down consolidation in the middle.
-        # Additionally, if the other state's power is greater than its own, it will decrease in consolidation, signaling
-        # a challenget to its system of governance by a more powerful neighbor.
-        if self.state == other.state and self.state != State.GREY:
-            self.consolidation += 0.1
-        elif other.power > self.power:
-            self.consolidation -= 0.1
+            # If regimes match, consolidation increases by 0.1. If two 'grey area' states interact, though, this
+            # doesn't change, since they're both in the middle, attempting to push down consolidation in the middle.
+            # Additionally, if the other state's power is greater than its own, it will decrease in consolidation, signaling
+            # a challenget to its system of governance by a more powerful neighbor.
+            if self.state == other.state and self.state != State.GREY:
+                self.consolidation += 0.1
+            elif other.power > self.power:
+                self.consolidation -= 0.1
+        
+        # If it doesn't have any neighbors (i.e., a paraiah state), it will just be off on its own, so it can just continue doing nothing.
+        # I won't consolidate it further (even though it may), simply because it won't justify its regime with others or have its regime challenged.
+        except IndexError:
+            pass
         
         # Bounding (so it doesn't go negative infinitely)
         if self.consolidation < 0:
